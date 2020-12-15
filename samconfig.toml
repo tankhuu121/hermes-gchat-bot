@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "hermes-gchat-bot"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-47zzqmpp3ben"
+s3_prefix = "hermes-gchat-bot"
+region = "us-east-1"
+profile = "karros-lab"
+capabilities = "CAPABILITY_IAM"
