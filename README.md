@@ -52,3 +52,8 @@ Text, speech, or visual responses to return to the end-user.
 ## Follow-up intents
 
 ## Dialogflow Hangouts integration
+
+## Notes
+
+GoogleChat Card Message: maximum characters: "System Management, feature flag endpoint return"
+-> 48 characters.
