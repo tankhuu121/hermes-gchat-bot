@@ -7,4 +7,6 @@ s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-47zzqmpp3ben"
 s3_prefix = "hermes-gchat-bot"
 region = "us-east-1"
 profile = "karros-lab"
+confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+

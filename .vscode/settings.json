@@ -1,0 +1,7 @@
+{
+  "workbench.editor.enablePreview": false,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "python.pythonPath": "/usr/bin/python3"
+  // "editor.detectIndentation": false
+}
