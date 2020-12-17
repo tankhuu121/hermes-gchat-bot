@@ -3,6 +3,7 @@ import random
 from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 from apiclient.discovery import build
+import requests
 
 
 class GoogleChat:
@@ -18,6 +19,7 @@ class GoogleChat:
     self.HERMES_ROOM = 'AAAAe1Zy3YM'
     self.HERMES_LOGO_URL = 'https://edulogvn-devops.s3.us-east-2.amazonaws.com/resource/avatar/hermes.jpg'
     self.HERMES_APP_URL = 'https://hermes.karrostech.io'
+    self.BACKEND_URL = 'https://hermes-be.karrostech.net'
 
     with open('default_messages.json') as dm:
       if dm:
@@ -229,9 +231,9 @@ class GoogleChat:
   def send_notification(self):
     pass
 
-  def handle_message(self, message: dict):
+  def handle_message(self, space: str, message: dict):
     try:
-      sla_url = ''
+      print('message', message)
       text = message.get('text')
       if not text:
         return self.reply_default()
@@ -253,32 +255,80 @@ class GoogleChat:
         command_detail = message_content.get('command_detail')
         print('command_detail', command_detail)
 
-        if command and command_detail:
-          if command == 'check':
-            sla_name = ''
+        if command:
+        # if command and command_detail:
+          if command == 'sla':
+            sla_name = command_detail
 
             if sla_name:
-                card_content = {
-                    'title': sla_name,
-                    'subtitle': '',
-                    'main': {
-                        'title': 'Subject',
-                        'content': f"{sender_name}, Your SLA Checking Result"
-                    },
-                    'second': {
-                        'title': 'Requestor',
-                        'content': f'{sender_name}<{email}>'
-                    },
-                    'button': {
-                        'icon': self.HERMES_LOGO_URL,
-                        'iconLink': self.HERMES_APP_URL,
-                        'text': 'Ticket Detail',
-                        'link': sla_url
-                    }
-                }
-                cards = self.create_cards(card_content)
-                return self.reply_message(code=200, cards=cards)
+              resp_message = "Hi there! Hermes is not here now, please leave the message after he comes back!"
+              source = 'CHAT_BOT'
+              url = f'{self.BACKEND_URL}/api/v1/sla/execute'
+              headers = {'Content-Type': 'application/json'}
+              request_body = {'name': sla_name, 'source': source}
 
+              # message = f"Your {profile} is still working well! Congratulations!"
+              resp = requests.post(url, headers=headers, data=json.dumps(request_body))
+              print('resp', resp.json())
+              resp_message = resp.json().get('result').get('summary')
+              card_content = {
+                'title': f"Hermes got the result",
+                'subtitle': 'Powered by @Kupids',
+                'main': {
+                    'title': 'SLA',
+                    'content': sla_name
+                },
+                'second': {
+                    'title': 'Result',
+                    'content': resp_message
+                },
+                'button': {
+                    'icon': self.HERMES_LOGO_URL,
+                    'iconLink': self.HERMES_APP_URL,
+                    'text': 'View more SLA',
+                    'link': f'{self.HERMES_APP_URL}/#/dashboard'
+                }
+              }
+              cards = self.create_cards(card_content)
+              return self.reply_message(code=200, cards=cards)
+          if command == 'list' or command == 'show':
+            source = 'CHAT_BOT'
+            url = f'{self.BACKEND_URL}/api/v1/sla'
+
+            # message = f"Your {profile} is still working well! Congratulations!"
+            resp = requests.get(url)
+            print('resp', resp.json())
+            sla_list = resp.json().get('result')
+            print('sla_list', sla_list)
+            resp_message = ''
+            for sla in sla_list:
+              name = sla.get('name')
+              last_execution = sla.get('lastExecution')
+              if last_execution.get('success'):
+                status = 'Success'
+              else:
+                status = 'Failure'
+              resp_message += f"{name}: {status}\n"
+            card_content = {
+              'title': f"Hermes got the list SLA",
+              'subtitle': 'Powered by @Kupids',
+              'main': {
+                  'title': 'Total',
+                  'content': f'{len(sla_list)} SLA'
+              },
+              'second': {
+                  'title': 'Last Execution',
+                  'content': resp_message
+              },
+              'button': {
+                  'icon': self.HERMES_LOGO_URL,
+                  'iconLink': self.HERMES_APP_URL,
+                  'text': 'View more SLA',
+                  'link': f'{self.HERMES_APP_URL}/#/dashboard'
+              }
+            }
+            cards = self.create_cards(card_content)
+            return self.reply_message(code=200, cards=cards)
       return self.reply_default()
     except Exception as err:
         print('GC.handle_message.error', err)

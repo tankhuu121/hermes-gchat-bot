@@ -42,20 +42,25 @@ def lambda_handler(event, context):
     body = event.get('body')
     if body:
       content = json.loads(body)
-      room_id = content.get('roomId')
-      sla_id = content.get('slaId')
-      sla_name = content.get('slaName')
+      message_type = content.get('type')
       message = content.get('message')
+      print('message_type', message_type)
+      print('message', message)
 
-      # handle simple call Jarvis
-      if room_id:
-        if message:
-          return GC.send_card_message(target_id=room_id, id=sla_id, name=sla_name, message=message)
-        else:
-          return GC.send_message(target_id=room_id, text=message)
-        # message = json.loads(body).get('message')
-        # if message:
-        #     return GC.handle_message(message)
+      if message_type:
+        space = content.get('space').get('name')
+
+        return GC.handle_message(space=space, message=message)
+      # handle simple call Hermes
+      else:
+        room_id = content.get('roomId')
+        sla_id = content.get('slaId')
+        sla_name = content.get('slaName')
+        if room_id:
+          if message:
+            return GC.send_card_message(target_id=room_id, id=sla_id, name=sla_name, message=message)
+          else:
+            return GC.send_message(target_id=room_id, text=message)
 
     return GC.reply_default()
 
