@@ -16,7 +16,7 @@ class GoogleChat:
     self.DEFAULT_MESSAGES = ['Have a nice day!', "What's up!",
                               "I'm feeling unsettled today!", "There's a cow next to the window."]
     self.HERMES_ROOM = 'AAAAe1Zy3YM'
-    self.HERMES_LOGO_URL = 'https://edulogvn-devops.s3.us-east-2.amazonaws.com/resource/avatar/hermes.png'
+    self.HERMES_LOGO_URL = 'https://edulogvn-devops.s3.us-east-2.amazonaws.com/resource/avatar/hermes.jpg'
     self.HERMES_APP_URL = 'https://hermes.karrostech.net'
 
     with open('default_messages.json') as dm:
