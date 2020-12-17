@@ -17,7 +17,7 @@ class GoogleChat:
                               "I'm feeling unsettled today!", "There's a cow next to the window."]
     self.HERMES_ROOM = 'AAAAe1Zy3YM'
     self.HERMES_LOGO_URL = 'https://edulogvn-devops.s3.us-east-2.amazonaws.com/resource/avatar/hermes.jpg'
-    self.HERMES_APP_URL = 'https://hermes.karrostech.net'
+    self.HERMES_APP_URL = 'https://hermes.karrostech.io'
 
     with open('default_messages.json') as dm:
       if dm:
@@ -193,7 +193,7 @@ class GoogleChat:
 
   def send_card_message(self, target_id: str, id: str, name: str, message: str):
     try:
-      sla_url = f'{self.HERMES_APP_URL}/sla/{id}'
+      sla_url = f'{self.HERMES_APP_URL}/#/sla/detail/{id}'
       body = {}
 
       card_content = {
